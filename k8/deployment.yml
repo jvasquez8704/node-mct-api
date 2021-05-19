@@ -1,0 +1,21 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: morza-mct-api
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: morza-mct-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: morza-mct-api
+    spec:
+      containers:
+      - name: morza-mct-api
+        image: gcr.io/flask-rest-api-301205/mct:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4001

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: morza-mct-api-service
+  namespace: default
+spec:
+  # type: NodePort
+  type: LoadBalancer
+  selector:
+    app: morza-mct-api
+  ports:  
+  - name: user-sec-port 
+    port: 1201
+    targetPort: 4001
+    protocol: TCP

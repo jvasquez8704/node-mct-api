@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: api-mct
+spec:
+  backend:
+    serviceName: morza-mct-api-service
+    servicePort: 1201
