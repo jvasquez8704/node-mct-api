@@ -3,11 +3,28 @@ const { pool } = require('../database/connect');
 
 
 const getDocs =  async (req, res = response) => {
-    const resulset = await pool.query('SELECT * FROM doc');
-    const people = resulset.rows;
+    const resulset = await pool.query('SELECT str_id as doc_id, title, subtitle FROM doc WHERE type_id = $1', [1]);
+    const docs = resulset.rows;
+    const data = docs.map( doc => {
+      const { doc_id, title, subtitle } = doc;
+      return { doc_id, title, subtitle };
+    });
     res.json({
         ok: true,
-        data: people
+        data: data
+    });
+};
+
+const getCats =  async (req, res = response) => {
+    const resulset = await pool.query('SELECT * FROM category');
+    const cats = resulset.rows;
+    const data = cats.filter( cat => {
+        cat.children = cats.filter( subcat => cat.id === subcat.parent_id);
+        return cat.parent_id === null;
+    });
+    res.json({
+        ok: true,
+        data: data
     });
 };
 
@@ -140,5 +157,6 @@ module.exports = {
     createDoc,
     createDocTest,
     getGeneDoc,
+    getCats,
     helloWord
 }
