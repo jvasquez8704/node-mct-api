@@ -1,0 +1,89 @@
+image: gcr.io/kaniko-project/executor:debug
+
+stages:
+  - build
+  - deploy
+
+.build:
+  # Official docker image.
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: build
+  script:
+    - mkdir certs
+    - mv $CERT certs/cert1.pem
+    - mv $KEY certs/privkey1.pem
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - |
+      /kaniko/executor \
+        --context $CI_PROJECT_DIR \
+        --dockerfile $CI_PROJECT_DIR/Dockerfile \
+        --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
+        --destination $CI_REGISTRY_IMAGE:$TAG \
+        --build-arg ENV=$ENV
+  variables:
+    TAG: $CI_COMMIT_SHORT_SHA
+
+build_all:
+  extends: .build
+  variables:
+    ENV: development
+  except:
+    - master
+    - staging
+
+build_staging:
+  extends: .build
+  variables:
+    ENV: staging
+  only:
+    - staging
+
+build_prod:
+  extends: .build
+  variables:
+    ENV: production
+  only:
+    - master
+
+.deploy:
+  image:
+    name: gcr.io/cloud-builders/gke-deploy:latest
+  stage: deploy
+  script:
+    - k8s/deploy.sh
+  variables:
+    TAG: $CI_COMMIT_SHORT_SHA
+
+deploy_dev:
+  extends: .deploy
+  variables:
+    ENV: development
+  environment:
+    name: dev
+    url: https://api-dev.katchplus.com/mctdocs
+  only:
+    - development
+
+deploy_staging:
+  extends: .deploy
+  variables:
+    ENV: staging
+  environment:
+    name: staging
+    url: https://api-staging.katchplus.com/mctdocs
+  only:
+    - staging
+
+deploy_production:
+  extends: .deploy
+  variables:
+    ENV: production
+    REPLICAS: 2
+  environment:
+    name: prod
+    url: https://api.katchplus.com/mctdocs
+  only:
+    - master

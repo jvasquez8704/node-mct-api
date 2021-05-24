@@ -1,11 +1,14 @@
 const express = require('express');
-require('dotenv').config();
+const dotenv = require('dotenv').config();
 const cors = require('cors');
+
+//added to https and certificate support
+const fs = require('fs');
+const https = require('https');
  
 const app = express();
 
 app.use(cors());
-
 app.use(express.static('public'));
 
 //Lectura y parseo de boby
@@ -20,8 +23,10 @@ app.use('/genes', require('./routes/genes'));
 
 app.use('/scoring_rules', require('./routes/scoring-rules'));
 
-
 //configuramos
-app.listen( process.env.PORT, () => {
+https.createServer({
+    key: fs.readFileSync('certs/privkey1.pem'),
+    cert: fs.readFileSync('certs/cert1.pem')
+}, app).listen( process.env.PORT, () => {
     console.log( `Server started in port ${ process.env.PORT } ` );
 })
