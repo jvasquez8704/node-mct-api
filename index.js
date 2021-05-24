@@ -9,7 +9,6 @@ const https = require('https');
 const app = express();
 
 app.use(cors());
-app.use(dotenv);
 app.use(express.static('public'));
 
 //Lectura y parseo de boby
