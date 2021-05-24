@@ -63,7 +63,7 @@ deploy_dev:
     ENV: development
   environment:
     name: dev
-    url: https://api-dev.katchplus.com/nrgsurvey/demographic
+    url: https://api-dev.katchplus.com/mctdocs
   only:
     - development
 
@@ -73,7 +73,7 @@ deploy_staging:
     ENV: staging
   environment:
     name: staging
-    url: https://api-staging.katchplus.com/nrgsurvey/demographic
+    url: https://api-staging.katchplus.com/mctdocs
   only:
     - staging
 
@@ -84,6 +84,6 @@ deploy_production:
     REPLICAS: 2
   environment:
     name: prod
-    url: https://api.katchplus.com/nrgsurvey/demographic
+    url: https://api.katchplus.com/mctdocs
   only:
     - master
