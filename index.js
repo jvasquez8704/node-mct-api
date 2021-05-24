@@ -12,11 +12,13 @@ app.use(express.static('public'));
 app.use(express.json());
 
 //Routes
-//TODO : AUTH: 
 //app.use('/api/auth', require('./routes/auth'));
 
-//TODO : CRUD: Documents
-app.use('/api/document', require('./routes/docs'));
+app.use('/document', require('./routes/docs'));
+
+app.use('/genes', require('./routes/genes'));
+
+app.use('/scoring_rules', require('./routes/scoring-rules'));
 
 
 //configuramos
