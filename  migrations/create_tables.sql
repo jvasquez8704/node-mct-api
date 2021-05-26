@@ -152,3 +152,53 @@ CREATE TABLE version (
 	note_id INT,
     FOREIGN KEY (note_id) REFERENCES note (id)
 );
+
+
+ALTER TABLE public.gene ADD str_id varchar(50) NULL;
+ALTER TABLE public.gene ADD title varchar(100) NULL;
+ALTER TABLE public.gene ADD subtitle varchar(100) NULL;
+ALTER TABLE public.gene ADD document_name varchar(50) NULL;
+ALTER TABLE public.gene ADD summary varchar(255) NULL;
+ALTER TABLE public.gene ADD description text NULL;
+ALTER TABLE public.gene ADD long_description text NULL;
+ALTER TABLE public.gene ADD archived bool NULL;
+ALTER TABLE public.gene ADD version varchar(25) NULL;
+ALTER TABLE public.gene ADD type_id int4 NULL;
+ALTER TABLE public.gene ADD created_by int4 NULL;
+ALTER TABLE public.gene ADD last_updated_by int4 NULL;
+
+ALTER TABLE public.gene ADD CONSTRAINT gene_created_by_fkey FOREIGN KEY (created_by) REFERENCES users(id)
+ALTER TABLE public.gene ADD CONSTRAINT gene_last_updated_by_fkey FOREIGN KEY (last_updated_by) REFERENCES users(id)
+ALTER TABLE public.gene ADD CONSTRAINT gene_type_id_fkey FOREIGN KEY (type_id) REFERENCES users(id)
+--ALTER TABLE public.gene ALTER COLUMN type_id TYPE int4 USING type_id::int4;
+--ALTER TABLE public.gene DROP COLUMN type_id;
+
+ALTER TABLE public.score_rule ADD str_id varchar(50) NULL;
+ALTER TABLE public.score_rule ADD title varchar(100) NULL;
+ALTER TABLE public.score_rule ADD subtitle varchar(100) NULL;
+ALTER TABLE public.score_rule ADD document_name varchar(50) NULL;
+ALTER TABLE public.score_rule ADD summary varchar(255) NULL;
+ALTER TABLE public.score_rule ADD description text NULL;
+ALTER TABLE public.score_rule ADD long_description text NULL;
+ALTER TABLE public.score_rule ADD archived bool NULL;
+ALTER TABLE public.score_rule ADD version varchar(25) NULL;
+ALTER TABLE public.score_rule ADD type_id int4 NULL;
+ALTER TABLE public.score_rule ADD created_by int4 NULL;
+ALTER TABLE public.score_rule ADD last_updated_by int4 NULL;
+
+ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_created_by_fkey FOREIGN KEY (created_by) REFERENCES users(id)
+ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_last_updated_by_fkey FOREIGN KEY (last_updated_by) REFERENCES users(id)
+ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_type_id_fkey FOREIGN KEY (type_id) REFERENCES doc_type(id)
+
+
+
+
+ALTER TABLE public.gene ADD title varchar(100) NULL;
+ALTER TABLE public.gene ADD subtitle varchar(100) NULL;
+ALTER TABLE public.gene ADD document_name varchar(50) NULL;
+ALTER TABLE public.gene ADD summary varchar(255) NULL;
+ALTER TABLE public.gene ADD archived bool NULL;
+ALTER TABLE public.gene ADD version varchar(25) NULL;
+ALTER TABLE public.score_rule DROP COLUMN type_id;
+ALTER TABLE public.score_rule ADD type_id int4 NULL;
+ALTER TABLE public.gene ADD CONSTRAINT score_rule_type_id_fkey FOREIGN KEY (type_id) REFERENCES doc_type(id)

@@ -17,6 +17,10 @@ INSERT INTO category_type
 ("name", description, is_active, created_at, updated_at)
 VALUES('sub category', '', true, now(), null);
 
+INSERT INTO category_type
+("name", description, is_active, created_at, updated_at)
+VALUES('sub sub category', '', true, now(), null);
+
 INSERT into category
 ("name", description, is_active, created_at, updated_at, parent_id, type_id)
 VALUES('Context', '', true, now(), null, null, 1);
@@ -123,3 +127,12 @@ VALUES(true, now(), null, 1, 2);
 INSERT INTO "version"
 (tag, body, is_active, created_at, updated_at, note_id)
 VALUES('v.0.0.1', 'Esta es una nota de prueba...', true, now(), null, 1);
+-- entities
+
+INSERT INTO public.entity_type
+(title, description, is_active, created_at, updated_at)
+VALUES('gene', '', true, now(), null);
+
+INSERT INTO public.entity_type
+(title, description, is_active, created_at, updated_at)
+VALUES('scoring_rule', '', true, now(), null);
