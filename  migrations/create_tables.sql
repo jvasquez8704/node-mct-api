@@ -172,6 +172,7 @@ ALTER TABLE public.gene ADD CONSTRAINT gene_last_updated_by_fkey FOREIGN KEY (la
 ALTER TABLE public.gene ADD CONSTRAINT gene_type_id_fkey FOREIGN KEY (type_id) REFERENCES users(id)
 --ALTER TABLE public.gene ALTER COLUMN type_id TYPE int4 USING type_id::int4;
 --ALTER TABLE public.gene DROP COLUMN type_id;
+--ALTER TABLE public.gene RENAME COLUMN updated_at TO last_update_date;
 
 ALTER TABLE public.score_rule ADD str_id varchar(50) NULL;
 ALTER TABLE public.score_rule ADD title varchar(100) NULL;

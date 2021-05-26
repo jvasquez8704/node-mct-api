@@ -26,29 +26,30 @@ const getCats =  async (req, res = response) => {
 
 const getGeneCats = async (req, res = response) => {
     const { catId, scatId, sscatId } = req.params;
-    const query = 'select d.* from category as sscat left join category as scat on sscat.parent_id = scat.id left join media_category as mc on mc.category_id = sscat.id left join doc as d on mc.doc_id = d.id where sscat.id = $1 and scat.id = $2 and scat.parent_id = $3 and d.id is not null';
+    const query = 'select g.*, mc.id as genome_id from category as sscat left join category as scat on sscat.parent_id = scat.id left join media_category as mc on mc.category_id = sscat.id left join gene as g on mc.gene_id = g.id where sscat.id = $1 and scat.id = $2 and scat.parent_id = $3 and g.id is not null';
     const values = [sscatId, scatId, catId];
 
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
             ok: false,
-            mjs: 'This doc does not exist in DB'
+            mjs: 'This gene does not exist in DB'
         });
     }
-    let doc = resultSet.rows[0];
-    const resultSetInfo = await pool.query('SELECT * from info_chunk WHERE doc_id = $1', [doc.id]);
+    let genome = resultSet.rows[0];
+    genome.category_id = catId;
+    genome.subcategory_id = scatId;
+    genome.subsubcategory_id = sscatId;
+    genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
+    genome.document_type = "subsub_subcategory";
+    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
 
     if (resultSetInfo.rowCount) {
-        doc.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
+        genome.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
     }else{
-        doc.html_encoded_info = []
+        genome.html_encoded_info = []
     }
-    
-    res.json({
-        ok: true,
-        data: doc
-    });
+    res.json(genome);
 }
 
 
