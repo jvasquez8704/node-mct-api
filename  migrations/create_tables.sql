@@ -190,7 +190,7 @@ ALTER TABLE public.score_rule ADD last_updated_by int4 NULL;
 ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_created_by_fkey FOREIGN KEY (created_by) REFERENCES users(id)
 ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_last_updated_by_fkey FOREIGN KEY (last_updated_by) REFERENCES users(id)
 ALTER TABLE public.score_rule ADD CONSTRAINT score_rule_type_id_fkey FOREIGN KEY (type_id) REFERENCES doc_type(id)
-
+--ALTER TABLE public.score_rule RENAME COLUMN updated_at TO last_update_date;
 
 
 
