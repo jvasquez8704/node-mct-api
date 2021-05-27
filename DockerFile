@@ -1,5 +1,8 @@
 FROM node:14
 
+ARG ENV=
+ENV ENV=${ENV}
+
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -15,6 +18,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 4001
+EXPOSE 443
 
-CMD [ "node", "index.js" ]g
+CMD [ "node", "index.js" ]
