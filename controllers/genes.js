@@ -41,7 +41,7 @@ const getGeneCats = async (req, res = response) => {
     genome.subcategory_id = scatId;
     genome.subsubcategory_id = sscatId;
     genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
-    genome.document_type = "subsub_subcategory";
+    genome.document_type = "sub_subcategory";
     const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
 
     if (resultSetInfo.rowCount) {
@@ -49,6 +49,15 @@ const getGeneCats = async (req, res = response) => {
     }else{
         genome.html_encoded_info = []
     }
+    //clean response before sent it
+    delete genome["id"];
+    delete genome["name"];
+    delete genome["genome_id"];
+    delete genome["is_active"];
+    delete genome["str_id"];
+    delete genome["title"];
+    delete genome["subtitle"];
+    delete genome["type_id"];
     res.json(genome);
 }
 
@@ -73,7 +82,7 @@ const getGeneCat = async (req, res = response) => {
 
 const createGeneDoc = async (req, res = response) => {
     console.log('create Gene Doc => ', req.body);
-    const { title, subtitle, document_name, summary, description, long_description, version, html_encoded_info, subsubcategory_id} = req.body;
+    const { title, subtitle, document_name, summary, description, long_description, version, archived, html_encoded_info, subsubcategory_id} = req.body;
 
     //Manual validation
     const resulset = await pool.query('SELECT * FROM media_category WHERE category_id = $1', [subsubcategory_id]);
@@ -84,10 +93,10 @@ const createGeneDoc = async (req, res = response) => {
         });
     }
 
-    const query = 'INSERT INTO gene(title, subtitle, document_name, summary, description, long_description, is_active, archived, created_at, last_update_date, "version", type_id, created_by, last_updated_by) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
+    const query = 'INSERT INTO gene(title, subtitle, document_name, summary, description, long_description, is_active, archived, create_date, last_update_date, "version", type_id, created_by, last_updated_by) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
     const _query = 'INSERT INTO media_category (title, description, is_active, created_at, updated_at, media_id, category_id, doc_id, score_rule_id, gene_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
     const subquery = 'INSERT INTO info_block("content", is_active, created_at, updated_at, genome_id, entity_type) VALUES($1, $2, $3, $4, $5, $6)';
-    const values = [title, subtitle, document_name, summary, description, long_description, 'true', 'true', 'now()', null, version, null, 1, null];
+    const values = [title, subtitle, document_name, summary, description, long_description, true, archived, 'now()', null, version, null, 1, null];
     
     try {
         const resulsetInsertGene = await pool.query(query, values);
@@ -103,9 +112,9 @@ const createGeneDoc = async (req, res = response) => {
                 await pool.query(subquery, sqValues);
             });
         }
-        res.status(201).json({
-            ok: true,
-            values
+        return res.status(201).json({
+            status: {code: 201, message: 'success'},
+            data: true,
         });
 
     } catch (error) {
