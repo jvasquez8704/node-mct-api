@@ -64,20 +64,76 @@ const getGeneCats = async (req, res = response) => {
 
 const getGene2Cats = async (req, res = response) => {
     const { catId, scatId } = req.params;
-    
-    res.json({
-        ok: true,
-        data: 'In dev GET/Gene by 2 categories... :D'
-    });
+    const query = 'select g.*, mc.id as genome_id from category as scat left join media_category as mc on mc.category_id = scat.id left join gene as g on mc.gene_id = g.id where scat.id = $1 and scat.parent_id = $2 and g.id is not null';
+    const values = [scatId, catId];
+
+    const resultSet = await pool.query(query, values);
+    if (!resultSet.rowCount) {
+        return res.status(400).json({
+            ok: false,
+            mjs: 'This gene does not exist in DB'
+        });
+    }
+    let genome = resultSet.rows[0];
+    genome.category_id = catId;
+    genome.subcategory_id = scatId;
+    genome.subsubcategory_id = null;
+    genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
+    genome.document_type = "sub_subcategory";
+    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
+
+    if (resultSetInfo.rowCount) {
+        genome.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
+    }else{
+        genome.html_encoded_info = []
+    }
+    //clean response before sent it
+    delete genome["id"];
+    delete genome["name"];
+    delete genome["genome_id"];
+    delete genome["is_active"];
+    delete genome["str_id"];
+    delete genome["title"];
+    delete genome["subtitle"];
+    delete genome["type_id"];
+    res.json(genome);
 }
 
 const getGeneCat = async (req, res = response) => {
     const { catId } = req.params;
-    
-    res.json({
-        ok: true,
-        data: 'In dev GET/Gene by category... :D'
-    });
+    const query = 'select g.*, mc.id as genome_id from category as cat left join media_category as mc on mc.category_id = cat.id left join gene as g on mc.gene_id = g.id where cat.id = $1 and g.id is not null';
+    const values = [catId];
+
+    const resultSet = await pool.query(query, values);
+    if (!resultSet.rowCount) {
+        return res.status(400).json({
+            ok: false,
+            mjs: 'This gene does not exist in DB'
+        });
+    }
+    let genome = resultSet.rows[0];
+    genome.category_id = catId;
+    genome.subcategory_id = null;
+    genome.subsubcategory_id = null;
+    genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
+    genome.document_type = "sub_subcategory";
+    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
+
+    if (resultSetInfo.rowCount) {
+        genome.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
+    }else{
+        genome.html_encoded_info = []
+    }
+    //clean response before sent it
+    delete genome["id"];
+    delete genome["name"];
+    delete genome["genome_id"];
+    delete genome["is_active"];
+    delete genome["str_id"];
+    delete genome["title"];
+    delete genome["subtitle"];
+    delete genome["type_id"];
+    res.json(genome);
 }
 
 const createGeneDoc = async (req, res = response) => {
