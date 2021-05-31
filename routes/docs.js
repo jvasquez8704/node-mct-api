@@ -18,7 +18,7 @@
  
  router.get('/:catId/:scatId', getGeneDoc);
  
- router.get('/:catId', getGeneDoc);
+ router.get('/:docId', getDoc);
  
  router.post('/', createDocTest);
 

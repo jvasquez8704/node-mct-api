@@ -64,7 +64,6 @@ const getGeneDoc = async (req, res = response) => {
 
 const getDoc = async (req, res = response) => {
     const { docId } = req.params;
-    let doc = null;
     // GET /p?tagId=5
     // const { tagId } = req.query.tagId
     // const token = await generateJWT(uid, name);
@@ -76,9 +75,12 @@ const getDoc = async (req, res = response) => {
             mjs: 'This doc does not exist in DB'
         });
     }
-    doc = resultSet.rows[0];
+    let doc = resultSet.rows[0];
     if (resultSetInfo.rowCount) {
-        doc.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
+        const { content, title } = resultSetInfo.rows[0];
+        doc.section = {};
+        doc.section.subtitle = title;
+        doc.section.html_encoded_section_info = content;
         // doc.html_encoded_info = resultSetInfo.rows.map( row => {
         //     let str_encoded = row.content.replace('\\\"', '"').replace('\\\"><','"><').replace('', '');
         //     console.log('str_encoded    ====>', str_encoded);
@@ -90,7 +92,7 @@ const getDoc = async (req, res = response) => {
     }
     
     res.json({
-        ok: true,
+        status: {code: 200, message: "success"},
         data: doc
     });
 };
