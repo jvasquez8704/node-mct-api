@@ -101,6 +101,15 @@ CREATE TABLE doc (
 	FOREIGN KEY (last_updated_by) REFERENCES users (id)
 );
 
+CREATE TABLE info_type (
+	id serial PRIMARY KEY,
+	title VARCHAR ( 255 ),
+	description TEXT,
+	is_active BOOLEAN,
+	created_at TIMESTAMP,
+	updated_at TIMESTAMP
+);
+
 CREATE TABLE info_chunk (
 	id serial PRIMARY KEY,
 	content TEXT,
@@ -110,6 +119,10 @@ CREATE TABLE info_chunk (
 	doc_id INT,
     FOREIGN KEY (doc_id) REFERENCES doc (id)
 );
+
+ALTER TABLE public.info_chunk ADD type_id int4 NULL;
+ALTER TABLE public.info_chunk ADD title TEXT NULL;
+ALTER TABLE public.info_chunk ADD CONSTRAINT info_chunk_type_id_fkey FOREIGN KEY (type_id) REFERENCES info_type(id)
 
 -- genome_code 
 CREATE TABLE media_category (

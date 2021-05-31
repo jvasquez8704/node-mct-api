@@ -98,48 +98,58 @@ const getDoc = async (req, res = response) => {
 
 const createDoc = async (req, res = response) => {
 
-    console.log(req.body.html_encoded_text);
-    const query = 'INSERT INTO info_chunk("content", is_active, created_at, updated_at, doc_id) VALUES($1, $2, $3, $4, $5)';
+    console.log(req.body);
+    const query = 'INSERT INTO doc(str_id, title, subtitle, document_name, summary, description, long_description, is_active, archived, create_date, last_update_date, "version", type_id, created_by, last_updated_by) VALUES($1, $2, $3, $4, $5)';
+    const _query = 'INSERT INTO info_chunk("content", is_active, created_at, updated_at, doc_id) VALUES($1, $2, $3, $4, $5)';
     const values = [req.body.html_encoded_text, 'true', 'now()', null, 1];
-    
-    try {
-        const resulset = await pool.query(query, values);
-        console.log('Resultado ', resulset);
-        res.status(201).json({
-            ok: true,
-            values
-        });
+    const _values = [req.body.html_encoded_text, 'true', 'now()', null, 1];
 
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            ok: false,
-            payload: 'Comunicate con el administradors',
-        });
-    }
+    res.status(201).json({
+        ok: true,
+        values
+    });
+    
+    // try {
+    //     const resulset = await pool.query(query, values);
+    //     console.log('Resultado ', resulset);
+    //     res.status(201).json({
+    //         ok: true,
+    //         values
+    //     });
+
+    // } catch (error) {
+    //     console.log(error)
+    //     return res.status(500).json({
+    //         ok: false,
+    //         payload: 'Comunicate con el administradors',
+    //     });
+    // }
 };
 
 const createDocTest = async (req, res = response) => {
-    console.log('createDocTest => ', req.body);
-    const { str_id, title, subtitle, document_name, summary, description, long_description, version, html_encoded_info} = req.body;
-    const query = 'INSERT INTO doc(str_id, title, subtitle, document_name, summary, description, long_description, is_active, archived, created_at, last_update_date, "version", type_id, created_by, last_updated_by) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *';
-    const subquery = 'INSERT INTO info_chunk("content", is_active, created_at, updated_at, doc_id) VALUES($1, $2, $3, $4, $5)';
-    const values = [str_id, title, subtitle, document_name, summary, description, long_description, 'true', 'true', 'now()', null, version, 2, 1, null];
+    //console.log('createDocTest => ', req.body);
+    let retVal = null;
+    const { document_id, document_name, summary, description, long_description, created_by, last_updated_by, version, archived, document_info} = req.body;
+    const { section, title } = document_info;
+    const { subtitle, html_encoded_section_info } = section;
+    const query = 'INSERT INTO doc(str_id, title, subtitle, document_name, summary, description, long_description, is_active, archived, create_date, last_update_date, "version", type_id, created_by, last_updated_by) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *';
+    const subquery = 'INSERT INTO info_chunk(title, "content", is_active, created_at, updated_at, doc_id, type_id) VALUES($1, $2, $3, $4, $5, $6, $7)';
+    const values = [document_id, title, subtitle, document_name, summary, description, long_description, true, archived, 'now()', null, version, 1, 1, null];
     
     try {
         const resulset = await pool.query(query, values);
         const { id } = resulset.rows[0];
         console.log('Resultado ', resulset.rows[0]);
-        if(html_encoded_info.length > 0) {
-            html_encoded_info.map( async item => {
-                const { html_encoded_text } = item;
-                const sqValues = [html_encoded_text, 'true', 'now()', null, id];
-                await pool.query(subquery, sqValues);
-            });
+        retVal = resulset.rows[0];
+        retVal.section = section;
+        if(section) {
+            const sqValues = [subtitle, html_encoded_section_info, true, 'now()', null, id, 2];
+            console.log('section =>', sqValues);
+            await pool.query(subquery, sqValues);
         }
         res.status(201).json({
-            ok: true,
-            values
+            status: {code: 201, message: 'doc created successfull'},
+            data: retVal
         });
 
     } catch (error) {

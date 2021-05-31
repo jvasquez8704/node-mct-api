@@ -95,22 +95,29 @@ INSERT INTO public.doc
 (str_id, title, subtitle, document_name, summary, description, long_description, is_active, archived, created_at, last_update_date, "version", type_id, created_by, last_updated_by)
 VALUES('O8boEKCJjEMhVS9bbNjcpEunXaD3', 'Katch Media Genome Manual', 'Introduction', 'Document 0002', 'Welcome to the Katch Media Genome Manual, a robust document aimed at standardizing and elucidating our genomic approach to film and TV coding.', 'A description ...', 'A long very description ...', true, true, now(), null, 'v.0.0.1', 1, 1, null);
 
+INSERT INTO public.info_type
+(title, description, is_active, created_at, updated_at)
+VALUES('html_encoded_info', '', true, now(), null);
+
+INSERT INTO public.info_type
+(title, description, is_active, created_at, updated_at)
+VALUES('section', '', true, now(), null);
 
 INSERT INTO public.info_chunk
-("content", is_active, created_at, updated_at, doc_id)
-VALUES('Test contenido largo 1', true, now(), null, 1);
+("content", is_active, created_at, updated_at, doc_id, type_id)
+VALUES('Test contenido largo 1', true, now(), null, 1, 1);
 
 INSERT INTO public.info_chunk
-("content", is_active, created_at, updated_at, doc_id)
-VALUES('Test contenido largo 2', true, now(), null, 1);
+("content", is_active, created_at, updated_at, doc_id, type_id)
+VALUES('Test contenido largo 2', true, now(), null, 1, 1);
 
 INSERT INTO public.info_chunk
-("content", is_active, created_at, updated_at, doc_id)
-VALUES('Test contenido largo 1', true, now(), null, 2);
+("content", is_active, created_at, updated_at, doc_id, type_id)
+VALUES('Test contenido largo 1', true, now(), null, 2, 1);
 
 INSERT INTO public.info_chunk
-("content", is_active, created_at, updated_at, doc_id)
-VALUES('Test contenido largo 2', true, now(), null, 2);
+("content", is_active, created_at, updated_at, doc_id, type_id)
+VALUES('Test contenido largo 2', true, now(), null, 2, 1);
 
 
 -- code_genome
