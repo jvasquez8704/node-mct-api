@@ -60,7 +60,7 @@ const getScoringRule2Cats = async (req, res = response) => {
     genome.subsubcategory_id = null;
     genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
     genome.document_type = "sub_subcategory";
-    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
+    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 2', [genome.genome_id]);
 
     if (resultSetInfo.rowCount) {
         genome.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
@@ -97,7 +97,7 @@ const getScoringRuleCat = async (req, res = response) => {
     genome.subsubcategory_id = null;
     genome.created_by = "O8boEKCJjEMhVS9bbNjcpEunXaD2";
     genome.document_type = "sub_subcategory";
-    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 1', [genome.genome_id]);
+    const resultSetInfo = await pool.query('SELECT * from info_block WHERE genome_id = $1 and entity_type = 2', [genome.genome_id]);
 
     if (resultSetInfo.rowCount) {
         genome.html_encoded_info = resultSetInfo.rows.map( row => ({'html_encoded_text':row.content}));
