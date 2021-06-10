@@ -27,13 +27,13 @@ const getCats =  async (req, res = response) => {
         data: data
     });
 };
-
+/*
 const helloWord =  async (req, res = response) => {
     res.json({
         ok: true,
         data: "Hello great people from MCT API!!!"
     });
-};
+};*/
 
 const getGeneDoc = async (req, res = response) => {
     const { catId, scatId, sscatId } = req.params;
@@ -176,6 +176,6 @@ module.exports = {
     createDoc,
     createDocTest,
     getGeneDoc,
-    getCats,
-    helloWord
+    getCats/*,
+    helloWord*/
 }
