@@ -11,12 +11,13 @@ const getScoringRule = async (req, res = response) => {
 
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
-      return res.status(404).json({
-        status: {
-          code: 404,
-          mjs: "This score rule does not exist in DB",
-        },
-      });
+        return res.status(404).json({
+            status: {
+                code: 404,
+                message: "This score rule does not exist in DB",
+            },
+            data: null
+        });
     }
     let genome = resultSet.rows[0];
     genome.category_id = catId;
@@ -39,7 +40,14 @@ const getScoringRule = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+    
+    res.json({
+        status: {
+            code: 200,
+            message: "Success",
+        },
+        data: genome
+    });
 }
 
 const getScoringRule2Cats = async (req, res = response) => {
@@ -50,8 +58,11 @@ const getScoringRule2Cats = async (req, res = response) => {
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
-            ok: false,
-            mjs: 'This gene does not exist in DB'
+            status: {
+                code: 404,
+                message: "This score rule does not exist in DB",
+            },
+            data: null
         });
     }
     let genome = resultSet.rows[0];
@@ -76,7 +87,13 @@ const getScoringRule2Cats = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+    res.json({
+        status: {
+            code: 200,
+            message: "Success",
+        },
+        data: genome
+    });
 }
 
 const getScoringRuleCat = async (req, res = response) => {
@@ -87,8 +104,11 @@ const getScoringRuleCat = async (req, res = response) => {
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
-            ok: false,
-            mjs: 'This gene does not exist in DB'
+            status: {
+                code: 400,
+                message: 'This gene does not exist in DB',
+            },
+            data: null
         });
     }
     let genome = resultSet.rows[0];
@@ -113,7 +133,14 @@ const getScoringRuleCat = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+
+    res.json({
+        status: {
+            code: 200,
+            message: "Success",
+        },
+        data: genome
+    });
 }
 
 
@@ -129,6 +156,7 @@ const createScoringRule = async (req, res = response) => {
                 code: 404,
                 message: `For now, you must create the gene for ${subsubcategory_id} category.`
             },
+            data: null
         });
     }
     const [score_rule] = resulset_cm.rows;
@@ -137,9 +165,10 @@ const createScoringRule = async (req, res = response) => {
     if (score_rule_id) {
       return res.status(400).json({
         status: {
-          code: 400,
-          message: `The score rule for ${subsubcategory_id} category already exist.`,
-        }
+            code: 400,
+            message: `The score rule for ${subsubcategory_id} category already exist.`,
+        },
+        data: null
       });
     }
     console.log("genome => ", score_rule);

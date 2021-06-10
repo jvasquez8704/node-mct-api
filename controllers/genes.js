@@ -6,8 +6,11 @@ const getGenes =  async (req, res = response) => {
     const resulset = await pool.query('SELECT * FROM gene');
     const genes = resulset.rows;
     res.json({
-        ok: true,
-        data: genes
+        status: {
+            code: 200,
+            message: "Success",
+        },
+        data:genes
     });
 };
 
@@ -19,7 +22,10 @@ const getCats =  async (req, res = response) => {
         return cat.parent_id === null;
     });
     res.json({
-        ok: true,
+        status: {
+            code: 200,
+            message: "Success",
+        },
         data: data
     });
 };
@@ -32,8 +38,11 @@ const getGeneCats = async (req, res = response) => {
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
-            ok: false,
-            mjs: 'This gene does not exist in DB'
+            status: {
+                code: 400,
+                message: 'This gene does not exist in DB',
+            },
+            data: null
         });
     }
     let genome = resultSet.rows[0];
@@ -58,7 +67,13 @@ const getGeneCats = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+    res.json({
+        status: {
+            code: 200,
+            message: "Success",
+        },
+        data: genome
+    });
 }
 
 
@@ -70,8 +85,11 @@ const getGene2Cats = async (req, res = response) => {
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
-            ok: false,
-            mjs: 'This gene does not exist in DB'
+            status: {
+                code: 400,
+                message: 'This gene does not exist in DB',
+            },
+            data: null
         });
     }
     let genome = resultSet.rows[0];
@@ -96,7 +114,14 @@ const getGene2Cats = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+
+    res.json({
+        status: {
+            code: 200,
+            message: 'Success',
+        },
+        data: genome
+    });
 }
 
 const getGeneCat = async (req, res = response) => {
@@ -107,8 +132,11 @@ const getGeneCat = async (req, res = response) => {
     const resultSet = await pool.query(query, values);
     if (!resultSet.rowCount) {
         return res.status(400).json({
-            ok: false,
-            mjs: 'This gene does not exist in DB'
+            status: {
+                code: 400,
+                message: 'This gene does not exist in DB',
+            },
+            data: null
         });
     }
     let genome = resultSet.rows[0];
@@ -133,7 +161,13 @@ const getGeneCat = async (req, res = response) => {
     delete genome["title"];
     delete genome["subtitle"];
     delete genome["type_id"];
-    res.json(genome);
+    res.json({
+        status: {
+            code: 200,
+            message: 'Success',
+        },
+        data: genome
+    });
 }
 
 const createGeneDoc = async (req, res = response) => {
@@ -176,8 +210,11 @@ const createGeneDoc = async (req, res = response) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            ok: false,
-            payload: 'Comunicate with system administradors',
+            status: {
+                code: 500,
+                message: 'Comunicate with system administradors',
+            },
+            data: null
         });
     }
 };
