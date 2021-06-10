@@ -19,9 +19,9 @@ app.use(express.json());
 
 app.use('/document', require('./routes/docs'));
 
-app.use('/genes', require('./routes/genes'));
+app.use('/genes/document', require('./routes/genes'));
 
-app.use('/scoring_rules', require('./routes/scoring-rules'));
+app.use('/scoring_rules/document', require('./routes/scoring-rules'));
 
 //configuramos
 https.createServer({

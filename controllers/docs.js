@@ -3,11 +3,11 @@ const { pool } = require('../database/connect');
 
 
 const getDocs =  async (req, res = response) => {
-    const resulset = await pool.query('SELECT str_id as doc_id, title, subtitle FROM doc WHERE type_id = $1', [1]);
+    const resulset = await pool.query('SELECT id as id, title, subtitle FROM doc WHERE type_id = $1', [1]);
     const docs = resulset.rows;
     const data = docs.map( doc => {
-      const { doc_id, title, subtitle } = doc;
-      return { doc_id, title, subtitle };
+      const { id, title, subtitle } = doc;
+      return { id, title, subtitle };
     });
     res.json({
         ok: true,
